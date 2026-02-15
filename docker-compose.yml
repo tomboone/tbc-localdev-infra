@@ -1,0 +1,89 @@
+services:
+  traefik:
+    image: traefik:v3.6
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.mysql.address=:3306"
+      - "--entrypoints.pgsql.address=:5432"
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "3306:3306"
+      - "5432:5432"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/certs:/etc/traefik/certs:ro
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+    networks:
+      - proxy
+
+  mysql_db:
+    image: mysql:9.2
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    expose:
+      - "3306"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.mysql.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mysql.entrypoints=mysql"
+      - "traefik.tcp.services.mysql.loadbalancer.server.port=3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - proxy
+
+  postgresql_db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    expose:
+      - "5432"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.pgsql.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.pgsql.entrypoints=pgsql"
+      - "traefik.tcp.services.pgsql.loadbalancer.server.port=5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    networks:
+      - proxy
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    expose:
+      - "1025"
+      - "8025"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailpit.rule=Host(`mailpit.localhost`)"
+      - "traefik.http.routers.mailpit.tls=true"
+      - "traefik.http.routers.mailpit.entrypoints=websecure"
+      - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
+    networks:
+      - proxy
+
+volumes:
+  mysql-data:
+    name: mysql_mysql-data
+    external: true
+  postgres-data:
+    name: postgresql_postgres-data
+    external: true
+
+networks:
+  proxy:
+    external: true

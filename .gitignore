@@ -1,0 +1,15 @@
+# TLS certificates
+traefik/certs/*.pem
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.vscode/
+
+# OS
+.DS_Store
+
+# Claude Code - ignore local settings, keep CLAUDE.md
+.claude/settings.local.json

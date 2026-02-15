@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  up:
+    desc: Create proxy network (if needed) and start all services
+    cmds:
+      - docker network create proxy 2>/dev/null || true
+      - docker compose up -d
+
+  down:
+    desc: Stop all services
+    cmds:
+      - docker compose down
+
+  restart:
+    desc: Restart all services
+    cmds:
+      - task: down
+      - task: up
+
+  logs:
+    desc: Follow logs for all services
+    cmds:
+      - docker compose logs -f
+
+  status:
+    desc: Show status of all services
+    cmds:
+      - docker compose ps
