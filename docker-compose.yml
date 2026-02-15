@@ -1,5 +1,6 @@
 services:
   traefik:
+    container_name: traefik
     image: traefik:v3.6
     command:
       - "--log.level=DEBUG"
@@ -10,14 +11,10 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.mysql.address=:3306"
-      - "--entrypoints.pgsql.address=:5432"
       - "--providers.file.filename=/etc/traefik/dynamic.yml"
     ports:
       - "80:80"
       - "443:443"
-      - "3306:3306"
-      - "5432:5432"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/certs:/etc/traefik/certs:ro
@@ -32,30 +29,21 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    expose:
-      - "3306"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.tcp.routers.mysql.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mysql.entrypoints=mysql"
-      - "traefik.tcp.services.mysql.loadbalancer.server.port=3306"
+    ports:
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - proxy
 
   postgresql_db:
+    container_name: postgresql_db
     image: postgres:17
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-    expose:
-      - "5432"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.tcp.routers.pgsql.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.pgsql.entrypoints=pgsql"
-      - "traefik.tcp.services.pgsql.loadbalancer.server.port=5432"
+    ports:
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql
     networks:
