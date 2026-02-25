@@ -1,6 +1,6 @@
 services:
   traefik:
-    container_name: traefik
+    container_name: tbc_traefik
     image: traefik:v3.6
     command:
       - "--log.level=DEBUG"
@@ -24,7 +24,7 @@ services:
 
   mysql_db:
     image: mysql:9.2
-    container_name: mysql_db
+    container_name: tbc_mysql_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
@@ -37,7 +37,7 @@ services:
       - proxy
 
   postgresql_db:
-    container_name: postgresql_db
+    container_name: tbc_postgresql_db
     image: postgres:17
     environment:
       POSTGRES_USER: root
@@ -51,7 +51,7 @@ services:
 
   mailpit:
     image: axllent/mailpit:latest
-    container_name: mailpit
+    container_name: tbc_mailpit
     expose:
       - "1025"
       - "8025"
