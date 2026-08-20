@@ -67,10 +67,8 @@ services:
 volumes:
   mysql-data:
     name: mysql_mysql-data
-    external: true
   postgres-data:
     name: postgresql_postgres-data
-    external: true
 
 networks:
   proxy:

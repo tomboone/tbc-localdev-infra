@@ -12,8 +12,8 @@ Unified localdev infrastructure — Traefik, MySQL, PostgreSQL, and Mailpit in a
 ## Key details
 
 - **Traefik** reverse proxy for HTTP (:80) and HTTPS (:443)
-- **MySQL** (mysql:9.2) — direct port publishing (:3306), volume `mysql_mysql-data` (external)
-- **PostgreSQL** (postgres:17) — direct port publishing (:5432), volume `postgresql_postgres-data` (external), data at `/var/lib/postgresql` (non-standard mount, do not change)
+- **MySQL** (mysql:9.2) — direct port publishing (:3306), volume `mysql_mysql-data` (created by Compose)
+- **PostgreSQL** (postgres:17) — direct port publishing (:5432), volume `postgresql_postgres-data` (created by Compose), data at `/var/lib/postgresql` (non-standard mount, do not change)
 - **Mailpit** — HTTP only via Traefik at `https://mailpit.localhost`
 - **Network**: `proxy` (external, shared with other localdev projects)
 
