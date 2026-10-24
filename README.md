@@ -50,13 +50,18 @@ task status    # docker compose ps
 
 ## Using from other projects
 
-Add this to your project's `Taskfile.yml`:
+Add this to your project's `Taskfile.yml`. `optional: true` keeps the Taskfile
+loading on a checkout without this repo (CI):
 
 ```yaml
 includes:
   infra:
     taskfile: ~/projects/tbc-localdev-infra/Taskfile.yml
     dir: ~/projects/tbc-localdev-infra
+    optional: true
 ```
 
 Then run `task infra:up`, `task infra:down`, etc.
+
+The rest of a consuming repo's `Taskfile.yml`, `docker-compose.yml` and
+`.pre-commit-config.yaml` follows [CONVENTIONS.md](CONVENTIONS.md).
