@@ -8,6 +8,7 @@ Unified localdev infrastructure — Traefik, MySQL, PostgreSQL, and Mailpit in a
 - `traefik/dynamic.yml` — TLS certificate configuration for Traefik
 - `traefik/certs/` — TLS certificate and key (gitignored)
 - `Taskfile.yml` — orchestration tasks (up, down, restart, logs, status)
+- `CONVENTIONS.md` — the dev-setup contract every consuming app repo follows
 
 ## Key details
 
@@ -36,4 +37,9 @@ includes:
   infra:
     taskfile: ~/projects/tbc-localdev-infra/Taskfile.yml
     dir: ~/projects/tbc-localdev-infra
+    optional: true
 ```
+
+The rest of a consuming repo's dev setup (Taskfile core tasks, compose service
+rules, pre-commit hooks) is defined in [CONVENTIONS.md](../CONVENTIONS.md). When the contract changes,
+change it there first, then bring the app repos in line.
