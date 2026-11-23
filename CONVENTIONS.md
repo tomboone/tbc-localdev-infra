@@ -251,6 +251,9 @@ Rules:
     repo has a formatter.
   - tvbf-backend: `entry: task test:unit`, because the integration suite is too
     slow for every commit.
+  - music-discovery-engine: `entry: task test -- -m "not catalog"`, because the
+    tests that read prod's MusicBrainz catalog through the tunnel are slow and fail
+    while prod's mirror is mid-reload. CI still runs them against a fixture catalog.
   - boone-gifts-backend: no lint, format or typecheck hooks until ruff and pyright
     are clean on main.
   - upcoming-movies-frontend: `entry: task format:check --` with
